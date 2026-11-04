@@ -1,0 +1,32 @@
+{
+ "ts": "2026-08-21T22:15:18",
+ "results": {
+  "gitleaks": {
+   "status": "RED",
+   "leaks": 8,
+   "rules": {
+    "generic-api-key": 8
+   },
+   "files": [
+    "C:/Users/you/Downloads/geo-cockpit/desktop/dist/win-unpacked/resources.pak:37 (worktree)",
+    "C:/Users/you/Downloads/geo-cockpit/desktop/dist/win-unpacked/resources.pak:66 (worktree)",
+    "C:/Users/you/Downloads/geo-cockpit/desktop/dist/win-unpacked/resources.pak:94 (worktree)",
+    "C:/Users/you/Downloads/geo-cockpit/desktop/dist/win-unpacked/resources.pak:537 (worktree)",
+    "C:/Users/you/Downloads/geo-cockpit/server/.venv/Lib/site-packages/cryptography/hazmat/bindings/_rust/openssl/hpke.pyi:77 (worktree)",
+    "C:/Users/you/Downloads/geo-cockpit/server/.venv/Lib/site-packages/cryptography/hazmat/bindings/_rust/openssl/hpke.pyi:101 (worktree)",
+    "C:/Users/you/Downloads/geo-cockpit/server/.venv/Lib/site-packages/jwt/algorithms.py:95 (worktree)",
+    "C:/Users/you/Downloads/geo-cockpit/server/.venv/Lib/site-packages/jwt/algorithms.py:898 (worktree)"
+   ],
+   "notes": [],
+   "detail": "8 secret(s) detected: {'generic-api-key': 8} in ['C:/Users/you/Downloads/geo-cockpit/desktop/dist/win-unpacked/resources.pak:37 (worktree)', 'C:/Users/you/Downloads/geo-cockpit/desktop/dist/win-unpacked/resources.pak:66 (worktree)', 'C:/Users/you/Downloads/geo-cockpit/desktop/dist/win-unpacked/resources.pak:94 (worktree)', 'C:/Users/you/Downloads/geo-cockpit/desktop/dist/win-unpacked/resources.pak:537 (worktree)', 'C:/Users/you/Downloads/geo-cockpit/server/.venv/Lib/site-packages/cryptography/hazmat/bindings/_rust/openssl/hpke.pyi:77 (worktree)', 'C:/Users/you/Downloads/geo-cockpit/server/.venv/Lib/site-packages/cryptography/hazmat/bindings/_rust/openssl/hpke.pyi:101 (worktree)', 'C:/Users/you/Downloads/geo-cockpit/server/.venv/Lib/site-packages/jwt/algorithms.py:95 (worktree)', 'C:/Users/you/Downloads/geo-cockpit/server/.venv/Lib/site-packages/jwt/algorithms.py:898 (worktree)']"
+  },
+  "mcp": {
+   "status": "SKIPPED",
+   "detail": "no --mcp-manifest given (pass the WebMCP/MCP manifest if the app exposes tools)"
+  },
+  "prompt_injection": {
+   "status": "SKIPPED",
+   "detail": "no --agent-url given (pass the app's LLM/agent endpoint to red-team it)"
+  }
+ }
+}

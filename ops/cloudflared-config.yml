@@ -1,0 +1,11 @@
+# cloudflared named-tunnel config for GEO Cockpit.
+# Copy to  C:\Users\you\.cloudflared\config.yml  and replace <TUNNEL-UUID> with the id printed by
+#   cloudflared tunnel create geo-cockpit
+# (setup-remote.ps1 does this for you.)
+tunnel: <TUNNEL-UUID>
+credentials-file: C:\Users\you\.cloudflared\<TUNNEL-UUID>.json
+
+ingress:
+  - hostname: geo.neuron-hq.com
+    service: http://127.0.0.1:8791
+  - service: http_status:404

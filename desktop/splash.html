@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:;" />
+<title>GEO Cockpit — starting</title>
+<style>
+  :root {
+    --bg: #0C0A14;
+    --accent: #7C5CFF;
+    --accent-soft: #A38DFF;
+    --text: #EDF1F6;
+    --muted: #93959C;
+    --ok: #34D399;
+    --warn: #FBBF24;
+    --err: #F87171;
+    --line: rgba(255, 255, 255, 0.08);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%; width: 100%;
+    background: var(--bg); color: var(--text);
+    font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-user-select: none; user-select: none; cursor: default;
+    overflow: hidden;
+  }
+  /* draggable frameless window */
+  body { -webkit-app-region: drag; }
+  button { -webkit-app-region: no-drag; }
+
+  .wrap {
+    position: relative; height: 100%; width: 100%;
+    padding: 26px 28px 22px; display: flex; flex-direction: column;
+    background:
+      radial-gradient(120% 90% at 18% 0%, rgba(124, 92, 255, 0.18), transparent 60%),
+      radial-gradient(80% 70% at 100% 100%, rgba(124, 92, 255, 0.10), transparent 55%);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .logo {
+    width: 26px; height: 26px; border-radius: 8px; flex: none;
+    background: linear-gradient(150deg, var(--accent), #5B3FE0);
+    box-shadow: 0 4px 16px rgba(124, 92, 255, 0.45);
+    display: grid; place-items: center;
+  }
+  .logo::after {
+    content: ""; width: 11px; height: 11px; border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.92);
+  }
+  .brand .name {
+    font-size: 12px; letter-spacing: 0.24em; font-weight: 600; color: var(--accent-soft);
+  }
+  h1 { margin: 16px 0 2px; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+  .sub { margin: 0 0 16px; font-size: 12.5px; color: var(--muted); }
+
+  .steps { display: flex; flex-direction: column; gap: 11px; }
+  .step { display: flex; align-items: center; gap: 11px; font-size: 13.5px; }
+  .ic { width: 18px; height: 18px; flex: none; display: grid; place-items: center; }
+  .step .label { color: var(--text); }
+  .step.pending .label { color: var(--muted); }
+  .step .label b { color: var(--ok); font-weight: 600; }
+
+  /* status glyphs */
+  .spinner {
+    width: 15px; height: 15px; border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.16); border-top-color: var(--accent);
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+  .check, .warnmark, .errmark { font-size: 15px; line-height: 1; font-weight: 700; }
+  .check { color: var(--ok); }
+  .warnmark { color: var(--warn); }
+  .errmark { color: var(--err); }
+
+  .spacer { flex: 1 1 auto; }
+
+  .foot {
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--line); padding-top: 12px; font-size: 12px; color: var(--muted);
+  }
+  .pill { display: inline-flex; align-items: center; gap: 6px; }
+  .srv { display: inline-flex; align-items: center; gap: 6px; }
+  .srv .led { width: 8px; height: 8px; border-radius: 50%; background: #4b4d57; box-shadow: 0 0 0 0 transparent; }
+  .srv.on .led { background: var(--ok); box-shadow: 0 0 8px rgba(52, 211, 153, 0.7); }
+  .srv.off .led { background: var(--err); box-shadow: 0 0 8px rgba(248, 113, 113, 0.6); }
+
+  .actions { display: none; gap: 8px; margin-top: 12px; }
+  .actions.show { display: flex; }
+  button {
+    font: inherit; font-size: 12.5px; padding: 7px 14px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--line); background: rgba(255,255,255,0.04); color: var(--text);
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  button:hover { background: rgba(255,255,255,0.09); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:hover { background: #6a4bf0; }
+
+  .hint { margin-top: 8px; font-size: 11.5px; color: var(--warn); display: none; }
+  .hint.show { display: block; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo"></div>
+      <div class="name">GEO COCKPIT</div>
+    </div>
+
+    <h1 id="headline">Starting up…</h1>
+    <p class="sub">Preparing your local cockpit</p>
+
+    <div class="steps">
+      <div class="step pending" id="row-server">
+        <div class="ic" id="ic-server"><div class="dot"></div></div>
+        <div class="label" id="label-server">Starting server…</div>
+      </div>
+      <div class="step pending" id="row-claude">
+        <div class="ic" id="ic-claude"><div class="dot"></div></div>
+        <div class="label" id="label-claude">Confirming Claude connection…</div>
+      </div>
+    </div>
+
+    <div class="hint" id="hint"></div>
+
+    <div class="actions" id="actions">
+      <button class="primary" id="btn-retry">Retry</button>
+      <button id="btn-continue">Continue anyway</button>
+      <button id="btn-quit">Quit</button>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="foot">
+      <span class="pill" id="battery">Battery —</span>
+      <span class="srv" id="server-led"><span class="led"></span><span id="server-text">Server</span></span>
+    </div>
+  </div>
+
+<script>
+  (function () {
+    "use strict";
+    var api = window.cockpit || { onStatus: function () {}, action: function () {} };
+
+    function setGlyph(elId, state) {
+      var el = document.getElementById(elId);
+      if (!el) return;
+      var html = '<div class="dot"></div>';
+      if (state === "busy") html = '<div class="spinner"></div>';
+      else if (state === "ok") html = '<span class="check">✓</span>';
+      else if (state === "warn") html = '<span class="warnmark">!</span>';
+      else if (state === "error") html = '<span class="errmark">✕</span>';
+      el.innerHTML = html;
+    }
+
+    function setRow(step, evt) {
+      var row = document.getElementById("row-" + step);
+      var label = document.getElementById("label-" + step);
+      if (label && typeof evt.text === "string") label.textContent = evt.text;
+      if (row) row.classList.toggle("pending", evt.state === "busy" || evt.state === undefined);
+      setGlyph("ic-" + step, evt.state);
+      // Emphasise the success line for Claude ("Max subscription ✓").
+      if (step === "claude" && evt.state === "ok" && label) {
+        label.innerHTML = "<b>" + (evt.text || "").replace(/</g, "&lt;") + "</b>";
+      }
+    }
+
+    function setBattery(bat) {
+      var el = document.getElementById("battery");
+      if (!el) return;
+      if (!bat || !bat.present) { el.textContent = "Battery —"; return; }
+      var bolt = bat.plugged ? " ⚡" : "";
+      el.textContent = "Battery " + (typeof bat.percent === "number" ? bat.percent + "%" : "—") + bolt;
+    }
+
+    function setServer(on) {
+      var el = document.getElementById("server-led");
+      var txt = document.getElementById("server-text");
+      if (!el) return;
+      el.classList.remove("on", "off");
+      el.classList.add(on ? "on" : "off");
+      if (txt) txt.textContent = on ? "Server online" : "Server offline";
+    }
+
+    function showActions(show) {
+      var a = document.getElementById("actions");
+      if (a) a.classList.toggle("show", !!show);
+    }
+
+    function showHint(text) {
+      var h = document.getElementById("hint");
+      if (!h) return;
+      if (text) { h.textContent = text; h.classList.add("show"); }
+      else h.classList.remove("show");
+    }
+
+    var headline = document.getElementById("headline");
+
+    api.onStatus(function (evt) {
+      if (!evt || !evt.step) return;
+      setRow(evt.step, evt);
+
+      if (typeof evt.server_ok === "boolean") setServer(evt.server_ok);
+      if (evt.battery !== undefined) setBattery(evt.battery);
+
+      if (evt.step === "server") {
+        if (evt.state === "busy") { headline.textContent = evt.reused ? "Connecting…" : "Starting up…"; }
+        if (evt.state === "ok") { headline.textContent = "Almost there…"; setServer(true); }
+        if (evt.state === "error") {
+          headline.textContent = "Couldn't start the backend";
+          setServer(false);
+          showActions(true);
+          showHint("");
+        }
+      }
+
+      if (evt.step === "claude") {
+        if (evt.state === "ok") { headline.textContent = "Ready"; showHint(""); }
+        if (evt.state === "warn") {
+          headline.textContent = "Ready (Claude offline)";
+          showHint("Claude isn't logged in. Run  claude /login  in a terminal, then Restart backend from the tray.");
+        }
+      }
+    });
+
+    document.getElementById("btn-retry").addEventListener("click", function () {
+      showActions(false); showHint("");
+      setRow("server", { state: "busy", text: "Starting server…" });
+      api.action("retry");
+    });
+    document.getElementById("btn-continue").addEventListener("click", function () {
+      api.action("continue");
+    });
+    document.getElementById("btn-quit").addEventListener("click", function () {
+      api.action("quit");
+    });
+  })();
+</script>
+</body>
+</html>

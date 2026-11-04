@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Inter was DECLARED here since day one but never loaded — the app silently rendered in
+   Segoe UI. Self-hosted variable font (no CDN: must work offline, zero external requests). */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Neuron HQ dark-violet brand system as RGB channels (so Tailwind alpha modifiers work) */
+  --bg: 12 10 20;
+  --surface: 23 21 31;
+  --card: 30 28 38;
+  --card-hover: 39 37 46;
+  --line: 44 39 64;
+  --primary: 124 92 255;
+  --primary-light: 163 141 255;
+  --primary-dark: 97 72 199;
+  --text: 237 241 246;
+  --text-muted: 147 149 162;
+  /* was 100 100 122 — ~3:1 on --card, an AA failure used for real content (timestamps, help
+     text). 128 128 148 measures ≥4.5:1 on the card ground. */
+  --text-dim: 128 128 148;
+  --ok: 16 185 129;
+  --warn: 245 158 11;
+  --danger: 239 68 68;
+  color-scheme: dark;
+}
+
+/* Keyboard focus must be visible everywhere, not just on .input */
+:focus-visible {
+  outline: 2px solid rgb(var(--primary-light));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: rgb(var(--bg));
+  color: rgb(var(--text));
+  font-family: Inter, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ambient brand glow behind the shell */
+.app-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 12% -10%, rgba(124, 92, 255, 0.16), transparent 60%),
+    radial-gradient(50rem 40rem at 110% 10%, rgba(97, 72, 199, 0.12), transparent 55%);
+}
+
+/* thin custom scrollbars */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgb(var(--card-hover));
+  border-radius: 8px;
+  border: 2px solid rgb(var(--bg));
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-line bg-card shadow-card;
+  }
+  .card-hover {
+    @apply transition-colors hover:bg-card-hover;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium
+      transition-all disabled:opacity-40 disabled:cursor-not-allowed select-none;
+  }
+  .btn-primary {
+    @apply btn bg-primary text-white hover:bg-primary-dark shadow-glow;
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-surface/60 text-ink hover:bg-card-hover;
+  }
+  .btn-danger {
+    @apply btn bg-danger text-white hover:brightness-110;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide;
+  }
+  .label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-dim;
+  }
+  /* BLG-style display type: huge, tight, one accent word (used on the Home hero) */
+  .display {
+    @apply font-bold tracking-[-0.02em] text-ink;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+  }
+  .stat-num {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Subtle grid texture, Home hero only (BLG's restraint rule: texture in ONE place) */
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(124, 92, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124, 92, 255, 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(70rem 30rem at 50% 0%, black 30%, transparent 75%);
+  }
+  .input {
+    /* no focus:outline-none — it out-specifies the global :focus-visible outline and turns
+       keyboard focus invisible. The ring stays for mouse focus; keyboard gets the outline. */
+    @apply w-full rounded-xl border border-line bg-surface/70 px-3 py-2 text-sm text-ink
+      placeholder:text-dim focus:border-primary/60 focus:ring-2 focus:ring-primary/20;
+  }
+  .mono {
+    font-family: "Cascadia Code", Consolas, ui-monospace, monospace;
+  }
+}

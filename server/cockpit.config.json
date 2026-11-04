@@ -1,0 +1,16 @@
+{
+  "engine_dir": "C:\\Users\\you\\.claude\\skills\\geo-flywheel\\references\\engine",
+  "bridge_db": "C:\\Users\\you\\Computer\\services\\bridge\\metrics.db",
+  "host": "127.0.0.1",
+  "port": 8791,
+  "public_host": "geo.neuron-hq.com",
+  "access": {
+    "team_domain": "wispy-haze-7325.cloudflareaccess.com",
+    "aud": "d27d2d441ad1b7c035e95af3807dd8c244f7e5845e3ee2356a8d1e66e184fb6f"
+  },
+  "roles": {
+    "cory.salisbury@gmail.com": { "role": "owner" }
+  },
+  "client_slugs": {},
+  "audit_concurrency": 1
+}

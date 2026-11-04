@@ -1,0 +1,17 @@
+# --- secrets & runtime state (NEVER commit) ---
+server/data/
+server/.cockpit-token
+**/.cockpit-token
+*.token
+.cloudflared/
+# --- python ---
+**/__pycache__/
+*.pyc
+.venv/
+# --- node / vite / electron build output ---
+node_modules/
+web/dist/
+desktop/dist/
+desktop/out/
+dist/
+build/

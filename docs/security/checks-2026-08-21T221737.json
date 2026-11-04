@@ -1,0 +1,21 @@
+{
+ "ts": "2026-08-21T22:17:37",
+ "results": {
+  "gitleaks": {
+   "status": "PASS",
+   "leaks": 0,
+   "rules": {},
+   "files": [],
+   "notes": [],
+   "detail": "no secrets in git history or working tree"
+  },
+  "mcp": {
+   "status": "SKIPPED",
+   "detail": "no --mcp-manifest given (pass the WebMCP/MCP manifest if the app exposes tools)"
+  },
+  "prompt_injection": {
+   "status": "SKIPPED",
+   "detail": "no --agent-url given (pass the app's LLM/agent endpoint to red-team it)"
+  }
+ }
+}
